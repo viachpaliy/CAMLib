@@ -149,7 +149,6 @@ namespace Ocl
         {
             return (n.z < 0) ? n * -1.0 : n;
         }
-
         public override string ToString()
         {
             return $"T: {p[0]} {p[1]} {p[2]} n={n}";
