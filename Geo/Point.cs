@@ -1,325 +1,230 @@
 using System;
+using System.Diagnostics;
 
 namespace Ocl
 {
-    // Заглушка для Triangle, оскільки її визначення не наведене
-   // public class Triangle { }
-
-    /// <summary>
-    /// Точка або вектор у 3D-просторі, визначений координатами (x, y, z)
-    /// </summary>
     public class Point
     {
-        public double X { get; set; }
-        public double Y { get; set; }
-        public double Z { get; set; }
+        public double x, y, z;
 
-        // Створити точку в (0,0,0)
-        public Point()
-        {
-            X = 0;
-            Y = 0;
-            Z = 0;
-        }
+        public Point() { x = 0; y = 0; z = 0; }
+        public Point(double x, double y, double z) { this.x = x; this.y = y; this.z = z; }
+        public Point(double x, double y) { this.x = x; this.y = y; this.z = 0.0; }
+        public Point(Point p) { x = p.x; y = p.y; z = p.z; }
 
-        // Створити точку в (x, y, z)
-        public Point(double x, double y, double z)
-        {
-            X = x;
-            Y = y;
-            Z = z;
-        }
+        public double Dot(Point p) => x * p.x + y * p.y + z * p.z;
 
-        // Створити точку в (x, y, 0)
-        public Point(double x, double y)
-        {
-            X = x;
-            Y = y;
-            Z = 0;
-        }
-
-        // Конструктор копіювання
-        public Point(Point p)
-        {
-            X = p.X;
-            Y = p.Y;
-            Z = p.Z;
-        }
-
-        // Деструктор не потрібен в C# (є GC)
-
-        // Скалярний добуток
-        public double Dot(Point p)
-            => X * p.X + Y * p.Y + Z * p.Z;
-
-        // Векторний добуток
         public Point Cross(Point p)
-            => new Point(
-                Y * p.Z - Z * p.Y,
-                Z * p.X - X * p.Z,
-                X * p.Y - Y * p.X
-            );
+        {
+            double xc = y * p.z - z * p.y;
+            double yc = z * p.x - x * p.z;
+            double zc = x * p.y - y * p.x;
+            return new Point(xc, yc, zc);
+        }
 
-        // Норма вектора (довжина)
-        public double Norm()
-            => Math.Sqrt(X * X + Y * Y + Z * Z);
+        public double Norm() => Math.Sqrt(Square(x) + Square(y) + Square(z));
 
-        // Нормалізація
         public void Normalize()
         {
-            double n = Norm();
-            if (n > 0)
+            double norm = Norm();
+            if (norm != 0.0)
             {
-                X /= n;
-                Y /= n;
-                Z /= n;
+                x /= norm;
+                y /= norm;
+                z /= norm;
             }
         }
 
-        // Відстань у XY площині
-        public double XYDistance(Point p)
-            => Math.Sqrt((X - p.X) * (X - p.X) + (Y - p.Y) * (Y - p.Y));
+        public double XyNorm() => Math.Sqrt(Square(x) + Square(y));
 
-        // Довжина у XY площині
-        public double XYNorm()
-            => Math.Sqrt(X * X + Y * Y);
-
-        // Нормалізація в XY площині
-        public void XYNormalize()
+        public void XyNormalize()
         {
-            double n = XYNorm();
-            if (n > 0)
+            double norm = XyNorm();
+            if (norm != 0.0)
             {
-                X /= n;
-                Y /= n;
+                x /= norm;
+                y /= norm;
+                // z stays the same
             }
         }
 
-        // Перпендикуляр у XY площині (90 градусів вліво)
-        public Point XYPerp()
-            => new Point(-Y, X, Z);
+        public Point XyPerp() => new Point(-y, x, z);
 
-        // Проекція точки по Z на відрізок p1-p2
-        public void ZProjectOntoEdge(Point p1, Point p2)
+        public void XyRotate(double cosa, double sina)
         {
-            // Переносимо X,Y на p1-p2, залишаємо Z від поточної точки
-            Point closest = ClosestPoint(p1, p2);
-            X = closest.X;
-            Y = closest.Y;
-            // Z не змінюємо
+            double temp = -y * sina + x * cosa;
+            y = x * sina + cosa * y;
+            x = temp;
         }
 
-        // Поворот у XY площині за cos і sin кута
-        public void XYRotate(double cosa, double sina)
+        public void XyRotate(double angle)
         {
-            double xNew = X * cosa - Y * sina;
-            double yNew = X * sina + Y * cosa;
-            X = xNew;
-            Y = yNew;
+            XyRotate(Math.Cos(angle), Math.Sin(angle));
         }
 
-        // Поворот у XY площині на кут (рад)
-        public void XYRotate(double angle)
-        {
-            double cosa = Math.Cos(angle);
-            double sina = Math.Sin(angle);
-            XYRotate(cosa, sina);
-        }
-
-        // Поворот навколо X
         public void XRotate(double theta)
         {
-            double cosT = Math.Cos(theta);
-            double sinT = Math.Sin(theta);
-            double yNew = Y * cosT - Z * sinT;
-            double zNew = Y * sinT + Z * cosT;
-            Y = yNew;
-            Z = zNew;
+            MatrixRotate(1, 0, 0,
+                         0, Math.Cos(theta), -Math.Sin(theta),
+                         0, Math.Sin(theta), Math.Cos(theta));
         }
 
-        // Поворот навколо Y
         public void YRotate(double theta)
         {
-            double cosT = Math.Cos(theta);
-            double sinT = Math.Sin(theta);
-            double xNew = X * cosT + Z * sinT;
-            double zNew = -X * sinT + Z * cosT;
-            X = xNew;
-            Z = zNew;
+            MatrixRotate(Math.Cos(theta), 0, Math.Sin(theta),
+                         0, 1, 0,
+                         -Math.Sin(theta), 0, Math.Cos(theta));
         }
 
-        // Поворот навколо Z
         public void ZRotate(double theta)
         {
-            double cosT = Math.Cos(theta);
-            double sinT = Math.Sin(theta);
-            double xNew = X * cosT - Y * sinT;
-            double yNew = X * sinT + Y * cosT;
-            X = xNew;
-            Y = yNew;
+            MatrixRotate(Math.Cos(theta), -Math.Sin(theta), 0,
+                         Math.Sin(theta), Math.Cos(theta), 0,
+                         0, 0, 1);
         }
 
-        // Матричний поворот
         public void MatrixRotate(double a, double b, double c,
-                                 double d, double e, double f,
-                                 double g, double h, double i)
+                                double d, double e, double f,
+                                double g, double h, double i)
         {
-            double xNew = a * X + b * Y + c * Z;
-            double yNew = d * X + e * Y + f * Z;
-            double zNew = g * X + h * Y + i * Z;
-            X = xNew;
-            Y = yNew;
-            Z = zNew;
+            double xr = a * x + b * y + c * z;
+            double yr = d * x + e * y + f * z;
+            double zr = g * x + h * y + i * z;
+            x = xr;
+            y = yr;
+            z = zr;
         }
 
-        // Відстань до прямої у XY площині
-        public double XYDistanceToLine(Point p1, Point p2)
+        public double XyDistance(Point p)
         {
-            // Вектор p1->p2
-            double dx = p2.X - p1.X;
-            double dy = p2.Y - p1.Y;
-            double numerator = Math.Abs(dy * X - dx * Y + p2.X * p1.Y - p2.Y * p1.X);
-            double denominator = Math.Sqrt(dx * dx + dy * dy);
-            return denominator == 0 ? 0 : numerator / denominator;
+            return (this - p).XyNorm();
         }
 
-        // Найближча точка на прямій (3D)
+        public double XyDistanceToLine(Point p1, Point p2)
+        {
+            if (p1.x == p2.x && p1.y == p2.y)
+            {
+                Debug.WriteLine("ERROR: Can't calculate distance from this to line through p1 and p2 in XY plane");
+                return -1;
+            }
+            else
+            {
+                Point v = new Point(p2.y - p1.y, -(p2.x - p1.x), 0);
+                v.Normalize();
+                Point r = new Point(p1.x - x, p1.y - y, 0);
+                return Math.Abs(v.Dot(r));
+            }
+        }
+
         public Point ClosestPoint(Point p1, Point p2)
         {
-            double dx = p2.X - p1.X;
-            double dy = p2.Y - p1.Y;
-            double dz = p2.Z - p1.Z;
-            double lengthSquared = dx * dx + dy * dy + dz * dz;
-            if (lengthSquared == 0)
-                return new Point(p1);
-            double t = ((X - p1.X) * dx + (Y - p1.Y) * dy + (Z - p1.Z) * dz) / lengthSquared;
-            return new Point(p1.X + t * dx, p1.Y + t * dy, p1.Z + t * dz);
+            Point v = p2 - p1;
+            if (v.Norm() == 0.0) throw new Exception("ClosestPoint: p1 and p2 are the same point");
+            double u = (this - p1).Dot(v) / v.Dot(v);
+            return p1 + v * u;
         }
 
-        // Найближча точка на прямій (XY)
-        public Point XYClosestPoint(Point p1, Point p2)
+        public Point XyClosestPoint(Point p1, Point p2)
         {
-            double dx = p2.X - p1.X;
-            double dy = p2.Y - p1.Y;
-            double lengthSquared = dx * dx + dy * dy;
-            if (lengthSquared == 0)
-                return new Point(p1);
-            double t = ((X - p1.X) * dx + (Y - p1.Y) * dy) / lengthSquared;
-            return new Point(p1.X + t * dx, p1.Y + t * dy, Z);
+            Point pt1 = p1;
+            Point pt2 = p2;
+            Point v = pt2 - pt1;
+            if (IsZeroTol(v.XyNorm()))
+            {
+                Debug.WriteLine("ERROR: Can't calculate closest point in XY plane");
+                throw new Exception("XyClosestPoint: p1 and p2 do not make a line in XY plane");
+            }
+            double u = (x - p1.x) * v.x + (y - p1.y) * v.y;
+            u = u / (v.x * v.x + v.y * v.y);
+            double x_ = p1.x + u * v.x;
+            double y_ = p1.y + u * v.y;
+            return new Point(x_, y_, 0);
         }
 
-        // Чи точка справа від прямої через p1,p2 (XY)
         public bool IsRight(Point p1, Point p2)
-            => ((p2.X - p1.X) * (Y - p1.Y) - (p2.Y - p1.Y) * (X - p1.X)) < 0;
+        {
+            double a1 = p2.x - p1.x;
+            double a2 = p2.y - p1.y;
+            double t1 = a2;
+            double t2 = -a1;
+            double b1 = x - p1.x;
+            double b2 = y - p1.y;
+            double t = t1 * b1 + t2 * b2;
+            return t > 1e-14;
+        }
 
-        // Чи точка всередині трикутника (заглушка, треба реалізувати)
         public bool IsInside(Triangle t)
         {
-             Point p = this;
+            Point p = this;
             Point a = t.p[0];
             Point b = t.p[1];
             Point c = t.p[2];
 
-            // Compute barycentric coordinates (2D, XY-plane)
-            double denominatorU = a.Y * c.X - a.X * c.Y + (c.Y - a.Y) * b.X + (a.X - c.X) * b.Y;
-            double numeratorU = a.Y * c.X - a.X * c.Y + (c.Y - a.Y) * p.X + (a.X - c.X) * p.Y;
-            double u = numeratorU / denominatorU;
+            double u = (a.y * c.x - a.x * c.y + (c.y - a.y) * p.x + (a.x - c.x) * p.y)
+                     / (a.y * c.x - a.x * c.y + (c.y - a.y) * b.x + (a.x - c.x) * b.y);
 
-            double denominatorV = a.X * b.Y - a.Y * b.X + (a.Y - b.Y) * c.X + (b.X - a.X) * c.Y;
-            double numeratorV = a.X * b.Y - a.Y * b.X + (a.Y - b.Y) * p.X + (b.X - a.X) * p.Y;
-            double v = numeratorV / denominatorV;
+            double v = (a.x * b.y - a.y * b.x + (a.y - b.y) * p.x + (b.x - a.x) * p.y)
+                     / (a.x * b.y - a.y * b.x + (a.y - b.y) * c.x + (b.x - a.x) * c.y);
 
-            // Check if point is inside triangle (in XY)
             return u > 0.0 && v > 0.0 && (u + v) < 1.0;
         }
 
-        // Чи точка всередині відрізка p1-p2
         public bool IsInside(Point p1, Point p2)
         {
-            // Для 3D
-            return
-                Math.Min(p1.X, p2.X) <= X && X <= Math.Max(p1.X, p2.X) &&
-                Math.Min(p1.Y, p2.Y) <= Y && Y <= Math.Max(p1.Y, p2.Y) &&
-                Math.Min(p1.Z, p2.Z) <= Z && Z <= Math.Max(p1.Z, p2.Z);
+            Point p2minusp1 = p2 - p1;
+            Point thisminusp1 = this - p1;
+            double t = thisminusp1.Dot(p2minusp1) / p2minusp1.Dot(p2minusp1);
+            return t >= 0.0 && t <= 1.0;
         }
 
-        // Чи x і y компоненти обидва нулі
-        public bool XParallel() => X == 0 && Y == 0;
-        // Чи паралельно осі Y
-        public bool YParallel() => X == 0 && Z == 0;
-        // Чи паралельно осі Z
-        public bool ZParallel() => Y == 0 && X == 0;
+        public bool XParallel() => IsZeroTol(y) && IsZeroTol(z);
 
-        // Оператор присвоєння (C# за замовчуванням копіює по посиланню для класів)
-        public Point Assign(Point p)
+        public bool YParallel() => IsZeroTol(x) && IsZeroTol(z);
+
+        public bool ZParallel() => x == 0.0 && y == 0.0;
+
+        public void ZProjectOntoEdge(Point p1, Point p2)
         {
-            X = p.X; Y = p.Y; Z = p.Z;
-            return this;
+            double t;
+            if (Math.Abs(p2.x - p1.x) > Math.Abs(p2.y - p1.y))
+                t = (x - p1.x) / (p2.x - p1.x);
+            else
+                t = (y - p1.y) / (p2.y - p1.y);
+            z = p1.z + t * (p2.z - p1.z);
         }
 
-        // Додавання
-        public static Point operator +(Point a, Point b)
-            => new Point(a.X + b.X, a.Y + b.Y, a.Z + b.Z);
+        // Operator overloads
+        public static Point operator +(Point a, Point b) => new Point(a.x + b.x, a.y + b.y, a.z + b.z);
+        public static Point operator -(Point a, Point b) => new Point(a.x - b.x, a.y - b.y, a.z - b.z);
+        public static Point operator *(Point p, double a) => new Point(p.x * a, p.y * a, p.z * a);
 
-        // Віднімання
-        public static Point operator -(Point a, Point b)
-            => new Point(a.X - b.X, a.Y - b.Y, a.Z - b.Z);
-
-        // Додавання до себе
-        //public static Point operator +=(Point a, Point b)
-        //{
-        //    a.X += b.X; a.Y += b.Y; a.Z += b.Z;
-        //    return a;
-        //}
-
-        // Віднімання від себе
-        //public static Point operator -=(Point a, Point b)
-        //{
-        //    a.X -= b.X; a.Y -= b.Y; a.Z -= b.Z;
-        //    return a;
-        //}
-
-        // Множення на скаляр (Point * scalar)
-        public static Point operator *(Point p, double a)
-            => new Point(p.X * a, p.Y * a, p.Z * a);
-
-        // Множення на скаляр (scalar * Point)
-        public static Point operator *(double a, Point p)
-            => p * a;
-
-        // Множення на скаляр до себе
-        //public static Point operator *=(Point p, double a)
-        //{
-        //    p.X *= a; p.Y *= a; p.Z *= a;
-        //    return p;
-        //}
-
-        // Рівність
         public override bool Equals(object obj)
         {
             if (obj is Point p)
-                return X == p.X && Y == p.Y && Z == p.Z;
+                return x == p.x && y == p.y && z == p.z;
             return false;
         }
 
-        public bool Equals(Point p)
-            => X == p.X && Y == p.Y && Z == p.Z;
-
-        // Нерівність
         public static bool operator ==(Point a, Point b)
-            => a.Equals(b);
+        {
+            if (ReferenceEquals(a, b)) return true;
+            if (a is null || b is null) return false;
+            return a.x == b.x && a.y == b.y && a.z == b.z;
+        }
 
-        public static bool operator !=(Point a, Point b)
-            => !a.Equals(b);
+        public static bool operator !=(Point a, Point b) => !(a == b);
 
-        public override int GetHashCode()
-            => HashCode.Combine(X, Y, Z);
+        public override int GetHashCode() => x.GetHashCode() ^ y.GetHashCode() ^ z.GetHashCode();
 
-        // ToString для репрезентації
-        public override string ToString()
-            => $"({X}, {Y}, {Z})";
+        public override string ToString() => $"({x}, {y}, {z})";
 
-        // Для сумісності з C++ str()
         public string Str() => ToString();
+
+        // Helper functions
+        private static double Square(double val) => val * val;
+
+        private static bool IsZeroTol(double val, double tol = 1e-9) => Math.Abs(val) < tol;
     }
+
+   
 }

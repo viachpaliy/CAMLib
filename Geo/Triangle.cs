@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace Ocl
 {
@@ -54,14 +55,14 @@ namespace Ocl
             p1 = null;
             p2 = null;
 
-            if (zcut <= this.bb.MinPt.Z || zcut >= this.bb.MaxPt.Z)
+            if (zcut <= this.bb.MinPt.z || zcut >= this.bb.MaxPt.z)
                 return false; // no zslice
 
             var below = new List<Point>();
             var above = new List<Point>();
             for (int m = 0; m < 3; ++m)
             {
-                if (p[m].Z <= zcut)
+                if (p[m].z <= zcut)
                     below.Add(p[m]);
                 else
                     above.Add(p[m]);
@@ -69,30 +70,30 @@ namespace Ocl
 
             if (!(below.Count == 1 || below.Count == 2))
             {
-                Console.WriteLine("Triangle.cs: ZSliceVerts() error while trying to z-slice");
-                Console.WriteLine($" triangle={this}");
-                Console.WriteLine($" zcut={zcut}");
-                Console.WriteLine($"{above.Count} above points:");
+                Debug.WriteLine("Triangle.cs: ZSliceVerts() error while trying to z-slice");
+                Debug.WriteLine($" triangle={this}");
+                Debug.WriteLine($" zcut={zcut}");
+                Debug.WriteLine($"{above.Count} above points:");
                 foreach (var pt in above)
-                    Console.WriteLine($"   {pt}");
-                Console.WriteLine($"{below.Count} below points:");
+                    Debug.WriteLine($"   {pt}");
+                Debug.WriteLine($"{below.Count} below points:");
                 foreach (var pt in below)
-                    Console.WriteLine($"   {pt}");
+                    Debug.WriteLine($"   {pt}");
             }
 
             if (below.Count == 2)
             {
                 // find two new intersection points
-                double t1 = (zcut - above[0].Z) / (below[0].Z - above[0].Z);
-                double t2 = (zcut - above[0].Z) / (below[1].Z - above[0].Z);
+                double t1 = (zcut - above[0].z) / (below[0].z - above[0].z);
+                double t2 = (zcut - above[0].z) / (below[1].z - above[0].z);
                 p1 = above[0] + (below[0] - above[0]) * t1;
                 p2 = above[0] + (below[1] - above[0]) * t2;
                 return true;
             }
             else if (below.Count == 1)
             {
-                double t1 = (zcut - above[0].Z) / (below[0].Z - above[0].Z);
-                double t2 = (zcut - above[1].Z) / (below[0].Z - above[1].Z);
+                double t1 = (zcut - above[0].z) / (below[0].z - above[0].z);
+                double t2 = (zcut - above[1].z) / (below[0].z - above[1].z);
                 p1 = above[0] + (below[0] - above[0]) * t1;
                 p2 = above[1] + (below[0] - above[1]) * t2;
                 return true;
@@ -127,7 +128,7 @@ namespace Ocl
             Point v2 = p[0] - p[2];
             Point ntemp = v1.Cross(v2);
             ntemp.Normalize();
-            n = new Point(ntemp.X, ntemp.Y, ntemp.Z);
+            n = new Point(ntemp.x, ntemp.y, ntemp.z);
         }
 
         /// <summary>
@@ -146,7 +147,7 @@ namespace Ocl
         /// </summary>
         public Point UpNormal()
         {
-            return (n.Z < 0) ? n * -1.0 : n;
+            return (n.z < 0) ? n * -1.0 : n;
         }
 
         public override string ToString()

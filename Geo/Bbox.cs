@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 
 namespace Ocl
 {
@@ -40,12 +41,12 @@ namespace Ocl
             {
                 switch (idx)
                 {
-                    case 0: return MinPt.X;
-                    case 1: return MaxPt.X;
-                    case 2: return MinPt.Y;
-                    case 3: return MaxPt.Y;
-                    case 4: return MinPt.Z;
-                    case 5: return MaxPt.Z;
+                    case 0: return MinPt.x;
+                    case 1: return MaxPt.x;
+                    case 2: return MinPt.y;
+                    case 3: return MaxPt.y;
+                    case 4: return MinPt.z;
+                    case 5: return MaxPt.z;
                     default: throw new ArgumentOutOfRangeException(nameof(idx), "Index must be in 0..5");
                 }
             }
@@ -57,12 +58,12 @@ namespace Ocl
         public bool IsInside(Point p)
         {
             if (!initialized) throw new InvalidOperationException("Bbox not initialized");
-            if (p.X > MaxPt.X) return false;
-            if (p.X < MinPt.X) return false;
-            if (p.Y > MaxPt.Y) return false;
-            if (p.Y < MinPt.Y) return false;
-            if (p.Z > MaxPt.Z) return false;
-            if (p.Z < MinPt.Z) return false;
+            if (p.x > MaxPt.x) return false;
+            if (p.x < MinPt.x) return false;
+            if (p.y > MaxPt.y) return false;
+            if (p.y < MinPt.y) return false;
+            if (p.z > MaxPt.z) return false;
+            if (p.z < MinPt.z) return false;
             return true;
         }
 
@@ -71,11 +72,11 @@ namespace Ocl
         /// </summary>
         public bool Overlaps(Bbox b)
         {
-            if ((this.MaxPt.X < b.MinPt.X) || (this.MinPt.X > b.MaxPt.X))
+            if ((this.MaxPt.x < b.MinPt.x) || (this.MinPt.x > b.MaxPt.x))
                 return false;
-            if ((this.MaxPt.Y < b.MinPt.Y) || (this.MinPt.Y > b.MaxPt.Y))
+            if ((this.MaxPt.y < b.MinPt.y) || (this.MinPt.y > b.MaxPt.y))
                 return false;
-            if ((this.MaxPt.Z < b.MinPt.Z) || (this.MinPt.Z > b.MaxPt.Z))
+            if ((this.MaxPt.z < b.MinPt.z) || (this.MinPt.z > b.MaxPt.z))
                 return false;
             return true;
         }
@@ -101,14 +102,14 @@ namespace Ocl
             }
             else
             {
-                if (p.X > MaxPt.X) MaxPt.X = p.X;
-                if (p.X < MinPt.X) MinPt.X = p.X;
+                if (p.x > MaxPt.x) MaxPt.x = p.x;
+                if (p.x < MinPt.x) MinPt.x = p.x;
 
-                if (p.Y > MaxPt.Y) MaxPt.Y = p.Y;
-                if (p.Y < MinPt.Y) MinPt.Y = p.Y;
+                if (p.y > MaxPt.y) MaxPt.y = p.y;
+                if (p.y < MinPt.y) MinPt.y = p.y;
 
-                if (p.Z > MaxPt.Z) MaxPt.Z = p.Z;
-                if (p.Z < MinPt.Z) MinPt.Z = p.Z;
+                if (p.z > MaxPt.z) MaxPt.z = p.z;
+                if (p.z < MinPt.z) MinPt.z = p.z;
             }
         }
 
