@@ -22,7 +22,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\CAMLib.csproj" />
+    <ProjectReference Include="..\..\src\CAMLib.csproj" />
   </ItemGroup>
 
 </Project>

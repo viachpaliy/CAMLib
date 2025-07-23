@@ -1,6 +1,9 @@
 ﻿using System;
+using System.Diagnostics;
+using System.IO;
 using Xunit;
 using Ocl;
+
 namespace CAMLib.Geo.Tests;
 
 public class PointTests
@@ -261,12 +264,12 @@ public class PointTests
 
         // Для перехоплення виводу Debug.WriteLine
         var listener = new StringWriter();
-        Debug.Listeners.Add(new TextWriterTraceListener(listener));
+        Trace.Listeners.Add(new TextWriterTraceListener(listener));
 
         double result = p.XyDistanceToLine(p1, p2);
 
-        Debug.Listeners.RemoveAt(Debug.Listeners.Count - 1); // Видаляємо слухача
-        Debug.Flush(); // Забезпечуємо запис у слухача
+        Trace.Listeners.RemoveAt(Trace.Listeners.Count - 1); // Видаляємо слухача
+        Trace.Flush(); // Забезпечуємо запис у слухача
 
         Assert.Equal(-1.0, result, Tolerance);
         Assert.Contains("ERROR: Can't calculate distance from this to line through p1 and p2 in XY plane", listener.ToString());
@@ -335,12 +338,12 @@ public class PointTests
 
         // Для перехоплення виводу Debug.WriteLine
         var listener = new StringWriter();
-        Debug.Listeners.Add(new TextWriterTraceListener(listener));
+        Trace.Listeners.Add(new TextWriterTraceListener(listener));
 
         Assert.Throws<Exception>(() => p.XyClosestPoint(p1, p2));
 
-        Debug.Listeners.RemoveAt(Debug.Listeners.Count - 1);
-        Debug.Flush();
+        Trace.Listeners.RemoveAt(Trace.Listeners.Count - 1);
+        Trace.Flush();
 
         Assert.Contains("ERROR: Can't calculate closest point in XY plane", listener.ToString());
     }

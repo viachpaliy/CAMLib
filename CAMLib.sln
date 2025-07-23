@@ -3,11 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CAMLib", "src\CAMLib.csproj", "{BDEE8E38-B2A2-4D7B-B4FE-BD5D5073B5CA}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CAMLib", "src\CAMLib.csproj", "{DD90DDA6-0751-46EF-BD27-3C4DF0509BB8}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{6BB4B5D8-FF2C-46D0-8FCA-7F3DB363DBF8}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{13763939-8D35-4783-AEF5-745E34B5EEC2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CAMLib.Geo.Tests", "tests\CAMLib.Geo.Tests\CAMLib.Geo.Tests.csproj", "{A1C95305-EA95-4BDB-A0B8-28460FFE8464}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CAMLib.Geo.Tests", "tests\CAMLib.Geo.Tests\CAMLib.Geo.Tests.csproj", "{2CCB4E3B-C35C-4AE4-8E40-BCD8AED2EEA1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -18,16 +18,16 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{BDEE8E38-B2A2-4D7B-B4FE-BD5D5073B5CA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{BDEE8E38-B2A2-4D7B-B4FE-BD5D5073B5CA}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{BDEE8E38-B2A2-4D7B-B4FE-BD5D5073B5CA}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{BDEE8E38-B2A2-4D7B-B4FE-BD5D5073B5CA}.Release|Any CPU.Build.0 = Release|Any CPU
-		{A1C95305-EA95-4BDB-A0B8-28460FFE8464}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A1C95305-EA95-4BDB-A0B8-28460FFE8464}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A1C95305-EA95-4BDB-A0B8-28460FFE8464}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A1C95305-EA95-4BDB-A0B8-28460FFE8464}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DD90DDA6-0751-46EF-BD27-3C4DF0509BB8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DD90DDA6-0751-46EF-BD27-3C4DF0509BB8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DD90DDA6-0751-46EF-BD27-3C4DF0509BB8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DD90DDA6-0751-46EF-BD27-3C4DF0509BB8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2CCB4E3B-C35C-4AE4-8E40-BCD8AED2EEA1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2CCB4E3B-C35C-4AE4-8E40-BCD8AED2EEA1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2CCB4E3B-C35C-4AE4-8E40-BCD8AED2EEA1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2CCB4E3B-C35C-4AE4-8E40-BCD8AED2EEA1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{A1C95305-EA95-4BDB-A0B8-28460FFE8464} = {6BB4B5D8-FF2C-46D0-8FCA-7F3DB363DBF8}
+		{2CCB4E3B-C35C-4AE4-8E40-BCD8AED2EEA1} = {13763939-8D35-4783-AEF5-745E34B5EEC2}
 	EndGlobalSection
 EndGlobal
