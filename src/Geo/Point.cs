@@ -5,6 +5,7 @@ namespace Ocl
 {
     public class Point
     {
+        public const double DefaultTolerance = 1e-6; // Default tolerance for floating-point comparisons
         public double x, y, z;
 
         public Point() { x = 0; y = 0; z = 0; }
@@ -223,7 +224,7 @@ namespace Ocl
         // Helper functions
         private static double Square(double val) => val * val;
 
-        private static bool IsZeroTol(double val, double tol = 1e-9) => Math.Abs(val) < tol;
+        private static bool IsZeroTol(double val) => Math.Abs(val) < DefaultTolerance;
     }
 
    

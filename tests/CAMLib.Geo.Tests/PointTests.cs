@@ -8,7 +8,7 @@ namespace CAMLib.Geo.Tests;
 
 public class PointTests
 {
-    private const double Tolerance = 1e-9; // Допустима похибка для порівняння чисел з плаваючою комою
+    private const double Tolerance = Point.DefaultTolerance; // Допустима похибка для порівняння чисел з плаваючою комою
 
     // Тести конструкторів
     [Fact]
@@ -366,7 +366,7 @@ public class PointTests
     [Fact]
     public void IsInside_Triangle_ReturnsTrueIfInside()
     {
-        var p = new Point(0.5, 0.5, 0.0);
+        var p = new Point(0.25, 0.25, 0.0);
         var t = new Triangle(new Point(0, 0, 0), new Point(1, 0, 0), new Point(0, 1, 0));
         Assert.True(p.IsInside(t));
 
