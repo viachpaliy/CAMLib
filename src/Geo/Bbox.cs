@@ -34,6 +34,60 @@ namespace Ocl
             initialized = true;
         }
 
+        // Constructor from two Points
+        // Arguments: p1, p2
+        public Bbox(Point p1, Point p2)
+        {
+            MinPt = new Point(Math.Min(p1.x, p2.x), Math.Min(p1.y, p2.y), Math.Min(p1.z, p2.z));
+            MaxPt = new Point(Math.Max(p1.x, p2.x), Math.Max(p1.y, p2.y), Math.Max(p1.z, p2.z));
+            initialized = true;
+        }   
+
+        // Copy constructor
+        public Bbox(Bbox bbox)
+        {
+            Debug.Assert(bbox != null, "Bbox copy constructor called with null argument");
+            MinPt = new Point(bbox.MinPt);
+            MaxPt = new Point(bbox.MaxPt);
+            initialized = bbox.initialized;
+        }
+
+        /// <summary>
+        /// Gets the width of the bounding box along the X-axis.
+        /// Returns 0 if the bounding box is empty.
+        /// </summary>
+        public double Width => IsEmpty ? 0 : MaxPt.x - MinPt.x;
+
+        /// <summary>
+        /// Gets the height of the bounding box along the Y-axis.
+        /// Returns 0 if the bounding box is empty.
+        /// </summary>
+        public double Height => IsEmpty ? 0 : MaxPt.y - MinPt.y;
+
+        /// <summary>
+        /// Gets the depth of the bounding box along the Z-axis.
+        /// Returns 0 if the bounding box is empty.
+        /// </summary>
+        public double Depth => IsEmpty ? 0 : MaxPt.z - MinPt.z;
+
+        /// <summary>
+        /// Gets the center point of the bounding box.
+        /// Returns a default Point3D if the bounding box is empty.
+        /// </summary>
+        public Point Center => IsEmpty ? new Point() : new Point(
+            (MinPt.x + MaxPt.x) / 2.0,
+            (MinPt.y + MaxPt.y) / 2.0,
+            (MinPt.z + MaxPt.z) / 2.0
+        );
+
+        /// <summary>
+        /// Gets the size of the bounding box as a Vector3D.
+        /// Returns a zero vector if the bounding box is empty.
+        /// </summary>
+        public Point Size => IsEmpty ? new Point() : new Point(Width, Height, Depth);
+
+
+
         // Index into maxpt and minpt returning a value [minx maxx miny maxy minz maxz]
         public double this[int idx]
         {
@@ -81,6 +135,29 @@ namespace Ocl
             return true;
         }
 
+         /// <summary>
+        /// Determines if this bounding box intersects with another bounding box.
+        /// </summary>
+        /// <param name="other">The other bounding box to check for intersection.</param>
+        /// <returns>True if the bounding boxes intersect, false otherwise.</returns>
+        public bool Intersects(Bbox other)
+        {
+            // If either bounding box is empty, they cannot intersect.
+            if (this.IsEmpty || other.IsEmpty)
+            {
+                return false;
+            }
+
+            // Check for overlap on all three axes.
+            // They intersect if and only if they overlap on X AND Y AND Z.
+            bool overlapsX = this.MaxPt.x >= other.MinPt.x && other.MaxPt.x >= this.MinPt.x;
+            bool overlapsY = this.MaxPt.y >= other.MinPt.y && other.MaxPt.y >= this.MinPt.y;
+            bool overlapsZ = this.MaxPt.z >= other.MinPt.z && other.MaxPt.z >= this.MinPt.z;
+
+            return overlapsX && overlapsY && overlapsZ;
+        }
+
+
         /// <summary>
         /// Reset the Bbox (sets initialized=false)
         /// </summary>
@@ -90,6 +167,35 @@ namespace Ocl
         }
 
         /// <summary>
+        /// Return true if the Bbox is empty (no points added)
+        /// </summary>
+        public bool IsEmpty => !initialized;    
+
+
+        /// <summary>
+        /// Add another Bbox to the Bbox. Enlarges the Bbox so another Bbox is contained within it.
+        /// <summary>
+        public void AddBbox(Bbox b)
+        {
+            if (!initialized)
+            {
+                MaxPt = new Point(b.MaxPt);
+                MinPt = new Point(b.MinPt);
+                initialized = true;
+            }
+            else
+            {
+                if (b.MaxPt.x > MaxPt.x) MaxPt.x = b.MaxPt.x;
+                if (b.MinPt.x < MinPt.x) MinPt.x = b.MinPt.x;
+
+                if (b.MaxPt.y > MaxPt.y) MaxPt.y = b.MaxPt.y;
+                if (b.MinPt.y < MinPt.y) MinPt.y = b.MinPt.y;
+
+                if (b.MaxPt.z > MaxPt.z) MaxPt.z = b.MaxPt.z;
+                if (b.MinPt.z < MinPt.z) MinPt.z = b.MinPt.z;
+            }
+        } 
+     
         /// Add a Point to the Bbox. Enlarges the Bbox so that p is contained within it.
         /// </summary>
         public void AddPoint(Point p)
