@@ -64,14 +64,7 @@ namespace Ocl
             _cc = new CCPoint();
         }
 
-        /// <summary>
-        /// Destructor
-        /// </summary>
-        ~CLPoint()
-        {
-            // nothing to do, managed memory
-        }
-
+       
         /// <summary>
         /// Return true if cl-point is below triangle
         /// </summary>
@@ -168,7 +161,9 @@ namespace Ocl
         }
 
         /// <summary>
-        /// Return the CCPoint (for python)
+        /// Return the CCPoint associated with this CLPoint.
+        /// This is thread-safe and ensures that the CCPoint is not replaced while being accessed.
+        /// It is important to use this method to get the CCPoint to avoid  concurrent modification issues. 
         /// </summary>
         public CCPoint GetCC()
         {
@@ -183,7 +178,7 @@ namespace Ocl
         /// </summary>
         public override string ToString()
         {
-            return $"CL({x}, {y}, {z}) cc={_cc}";
+            return $"CL({x}, {y}, {z}) CC={_cc}";
         }
 
         /// <summary>
