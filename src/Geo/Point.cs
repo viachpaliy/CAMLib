@@ -8,6 +8,34 @@ namespace Ocl
         public const double DefaultTolerance = 1e-6; // Default tolerance for floating-point comparisons
         public double x, y, z;
 
+         /// <summary>
+    /// Gets or sets the X-coordinate of the point.
+    /// </summary>
+    public double X
+    {
+        get { return x; }
+        set { x = value; } // 'value' is an implicit parameter representing the new value being set
+    }
+
+    /// <summary>
+    /// Gets or sets the Y-coordinate of the point.
+    /// </summary>
+    public double Y
+    {
+        get { return y; }
+        set { y = value; }
+    }
+
+    /// <summary>
+    /// Gets or sets the Z-coordinate of the point.
+    /// </summary>
+    public double Z
+    {
+        get { return z; }
+        set { z = value; }
+    }
+
+
         public Point() { x = 0; y = 0; z = 0; }
         public Point(double x, double y, double z) { this.x = x; this.y = y; this.z = z; }
         public Point(double x, double y) { this.x = x; this.y = y; this.z = 0.0; }
