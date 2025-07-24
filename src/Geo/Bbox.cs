@@ -231,9 +231,45 @@ namespace Ocl
             AddPoint(t.p[2]);
         }
 
+         /// <summary>
+        /// Determines whether the specified object is equal to the current object.
+        /// </summary>
+        /// <param name="obj">The object to compare with the current object.</param>
+        /// <returns>true if the specified object is equal to the current object; otherwise, false.</returns>
+        public override bool Equals(object obj)
+        {
+            if (obj == null || GetType() != obj.GetType())
+            {
+                return false;
+            }
+
+            Bbox other = (Bbox)obj;
+            return MinPt.x == other.MinPt.x && MinPt.y == other.MinPt.y && MinPt.z == other.MinPt.z &&
+                   MaxPt.x == other.MaxPt.x && MaxPt.y == other.MaxPt.y && MaxPt.z == other.MaxPt.z;
+        }
+
+        /// <summary>
+        /// Serves as the default hash function.
+        /// </summary>
+        /// <returns>A hash code for the current object.</returns>
+        public override int GetHashCode()
+        {
+            // Simple hash code combination for the properties
+            unchecked
+            {
+                int hash = 17;
+                hash = hash * 23 + MinPt.x.GetHashCode();
+                hash = hash * 23 + MinPt.y.GetHashCode();
+                hash = hash * 23 + MinPt.z.GetHashCode();
+                hash = hash * 23 + MaxPt.x.GetHashCode();
+                hash = hash * 23 + MaxPt.y.GetHashCode();
+                hash = hash * 23 + MaxPt.z.GetHashCode();
+                return hash;
+            }
+        }
         public override string ToString()
         {
-            return $"Bbox\n min= {MinPt}\n max= {MaxPt}\n";
+            return $"Bbox [MinPt.x={MinPt.x}, MinPt.y={MinPt.y}, MinPt.z={MinPt.z}, MaxPt.x={MaxPt.x}, MaxPt.y={MaxPt.y}, MaxPt.z={MaxPt.z}]\n";
         }
     }
 }

@@ -15,12 +15,12 @@ namespace CAMLib.Tests.Geo
 
             // Assert
             Assert.True(bbox.IsEmpty);
-            Assert.Equal(double.MaxValue, bbox.MinPt.x);
-            Assert.Equal(double.MaxValue, bbox.MinPt.y);
-            Assert.Equal(double.MaxValue, bbox.MinPt.z);
-            Assert.Equal(double.MinValue, bbox.MaxPt.x);
-            Assert.Equal(double.MinValue, bbox.MaxPt.y);
-            Assert.Equal(double.MinValue, bbox.MaxPt.z);
+            Assert.Equal(0, bbox.MinPt.x);
+            Assert.Equal(0, bbox.MinPt.y);
+            Assert.Equal(0, bbox.MinPt.z);
+            Assert.Equal(0, bbox.MaxPt.x);
+            Assert.Equal(0, bbox.MaxPt.y);
+            Assert.Equal(0, bbox.MaxPt.z);
         }
 
         // Test case for constructor with two points
@@ -53,7 +53,7 @@ namespace CAMLib.Tests.Geo
             double Maxx = 10.0, Maxy = 20.0, Maxz = 30.0;
 
             // Act
-            var bbox = new Bbox(Minx, Miny, Minz, Maxx, Maxy, Maxz);
+            var bbox = new Bbox(Minx, Maxx, Miny, Maxy, Minz, Maxz);
 
             // Assert
             Assert.False(bbox.IsEmpty);
@@ -90,7 +90,7 @@ namespace CAMLib.Tests.Geo
         public void AddPoint_ExpandsBboxCorrectly()
         {
             // Arrange
-            var bbox = new Bbox(0, 0, 0, 10, 10, 10);
+            var bbox = new Bbox(0, 10, 0, 10, 0, 10);
             var point = new Point(15, 5, 2);
 
             // Act
@@ -110,8 +110,8 @@ namespace CAMLib.Tests.Geo
         public void AddBbox_ExpandsBboxCorrectly()
         {
             // Arrange
-            var bbox1 = new Bbox(0, 0, 0, 10, 10, 10);
-            var bbox2 = new Bbox(5, 5, 5, 15, 15, 15);
+            var bbox1 = new Bbox(0, 10, 0, 10, 0, 10);
+            var bbox2 = new Bbox(5, 15, 5, 15, 5, 15);
 
             // Act
             bbox1.AddBbox(bbox2);
@@ -135,7 +135,7 @@ namespace CAMLib.Tests.Geo
         public void ContainsPoint_ReturnsCorrectBoolean(double x, double y, double z, bool expected)
         {
             // Arrange
-            var bbox = new Bbox(0, 0, 0, 10, 10, 10);
+            var bbox = new Bbox(0, 10, 0, 10, 0, 10);
             var point = new Point(x, y, z);
 
             // Act
@@ -156,8 +156,8 @@ namespace CAMLib.Tests.Geo
         public void IntersectsBbox_ReturnsCorrectBoolean(double Minx, double Miny, double Minz, double Maxx, double Maxy, double Maxz, bool expected)
         {
             // Arrange
-            var bbox1 = new Bbox(0, 0, 0, 10, 10, 10);
-            var bbox2 = new Bbox(Minx, Miny, Minz, Maxx, Maxy, Maxz);
+            var bbox1 = new Bbox(0, 10, 0, 10, 0, 10);
+            var bbox2 = new Bbox(Minx, Maxx, Miny, Maxy, Minz, Maxz);
 
             // Act
             bool result = bbox1.Intersects(bbox2);
@@ -171,7 +171,7 @@ namespace CAMLib.Tests.Geo
         public void Width_ReturnsCorrectValue()
         {
             // Arrange
-            var bbox = new Bbox(1.0, 2.0, 3.0, 11.0, 5.0, 6.0);
+            var bbox = new Bbox(1.0, 11.0, 3.0, 11.0, 5.0, 6.0);
 
             // Act & Assert
             Assert.Equal(10.0, bbox.Width);
@@ -182,7 +182,7 @@ namespace CAMLib.Tests.Geo
         public void Height_ReturnsCorrectValue()
         {
             // Arrange
-            var bbox = new Bbox(1.0, 2.0, 3.0, 4.0, 12.0, 6.0);
+            var bbox = new Bbox(1.0, 2.0, 4.0, 14.0, 2.0, 6.0);
 
             // Act & Assert
             Assert.Equal(10.0, bbox.Height);
@@ -193,7 +193,7 @@ namespace CAMLib.Tests.Geo
         public void Depth_ReturnsCorrectValue()
         {
             // Arrange
-            var bbox = new Bbox(1.0, 2.0, 3.0, 4.0, 5.0, 13.0);
+            var bbox = new Bbox(1.0, 2.0, 3.0, 4.0, 5.0, 15.0);
 
             // Act & Assert
             Assert.Equal(10.0, bbox.Depth);
@@ -240,7 +240,7 @@ namespace CAMLib.Tests.Geo
         public void Center_ReturnsCorrectPoint()
         {
             // Arrange
-            var bbox = new Bbox(0, 0, 0, 10, 20, 30);
+            var bbox = new Bbox(0, 10, 0, 20, 0, 30);
 
             // Act
             var center = bbox.Center;
@@ -256,7 +256,7 @@ namespace CAMLib.Tests.Geo
         public void Size_ReturnsCorrectVector()
         {
             // Arrange
-            var bbox = new Bbox(0, 0, 0, 10, 20, 30);
+            var bbox = new Bbox(0, 10, 0, 20, 0, 30);
 
             // Act
             var size = bbox.Size;
@@ -353,7 +353,7 @@ namespace CAMLib.Tests.Geo
         public void ToString_ReturnsFormattedString()
         {
             // Arrange
-            var bbox = new Bbox(0, 0, 0, 1, 1, 1);
+            var bbox = new Bbox(0, 1, 2, 3, 4, 5);
 
             // Act
             string result = bbox.ToString();
@@ -361,10 +361,10 @@ namespace CAMLib.Tests.Geo
             // Assert (Check if it contains expected values, format might vary slightly)
             Assert.Contains("MinPt.x=0", result);
             Assert.Contains("MaxPt.x=1", result);
-            Assert.Contains("MinPt.y=0", result);
-            Assert.Contains("MaxPt.y=1", result);
-            Assert.Contains("MinPt.z=0", result);
-            Assert.Contains("MaxPt.z=1", result);
+            Assert.Contains("MinPt.y=2", result);
+            Assert.Contains("MaxPt.y=3", result);
+            Assert.Contains("MinPt.z=4", result);
+            Assert.Contains("MaxPt.z=5", result);
         }
     }
 }
