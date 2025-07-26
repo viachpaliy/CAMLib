@@ -227,7 +227,7 @@ namespace Ocl
         public static Point operator -(Point a, Point b) => new Point(a.x - b.x, a.y - b.y, a.z - b.z);
         public static Point operator *(Point p, double a) => new Point(p.x * a, p.y * a, p.z * a);
 
-        public override bool Equals(object obj)
+        public override bool Equals(object? obj)
         {
             if (obj is Point p)
                 return x == p.x && y == p.y && z == p.z;

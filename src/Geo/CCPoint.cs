@@ -90,7 +90,7 @@ namespace Ocl
         /// <summary>
         /// String repr (like str() in C++)
         /// </summary>
-        public string Str()
+        public new string Str()
         {
             return this.ToString();
         }

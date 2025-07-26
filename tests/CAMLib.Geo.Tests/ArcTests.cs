@@ -291,7 +291,7 @@ namespace CAMLib.Geo.Tests;
             Assert.Equal(expected, arc.ToString());
         }
 
-        [Fact]
+/*         [Fact]
         public void SetProperties_HandlesNullPoints()
         {
             var arc = new Arc(); // p1, p2, c are null by default
@@ -314,7 +314,7 @@ namespace CAMLib.Geo.Tests;
             // then the internal logic of SetProperties for null is not needed.
             // Assume that the Arc(Point, Point, Point, bool) constructor always receives valid Points.
             // If Arc() calls SetProperties, its behavior is already checked.
-        }
+        } */
 
  /*        [Fact]
         public void SetProperties_HandlesZeroRadius()

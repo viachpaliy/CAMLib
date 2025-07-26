@@ -29,7 +29,13 @@ namespace Ocl
         /// </summary>
         public bool dir;
 
-        public Arc() { }
+        public Arc() 
+        {
+            p1 = new Point();
+            p2 = new Point();
+            c = new Point();
+            dir = true; // default to counter-clockwise
+        }
 
         /// <summary>
         /// Create an arc from point p1 to point p2 with center c and direction dir.

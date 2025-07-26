@@ -48,13 +48,13 @@ namespace Ocl
     /// <summary>
     /// A collection of Span objects
     /// </summary>
-    public class Path
+    public class ToolPath
     {
         public List<Span> SpanList { get; } = new List<Span>();
 
-        public Path() { }
+        public ToolPath() { }
 
-        public Path(Path p) { /* shallow copy is enough here */ }
+        public ToolPath(ToolPath p) { /* shallow copy is enough here */ }
 
         // FIXME: looks wrong – should be only one Append() that takes a Span
         public void Append(Line l) => SpanList.Add(new LineSpan(l));

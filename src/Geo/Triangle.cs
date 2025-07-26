@@ -19,6 +19,8 @@ namespace Ocl
         // Default constructor
         public Triangle()
         {
+            n = new Point(); // Initialize before CalcNormal()
+            bb = new Bbox(); // Initialize before CalcBB()
             p[0] = new Point(1, 0, 0);
             p[1] = new Point(0, 1, 0);
             p[2] = new Point(0, 0, 1);
@@ -29,6 +31,8 @@ namespace Ocl
         // Copy constructor
         public Triangle(Triangle t)
         {
+            n = new Point(); // Initialize before CalcNormal()
+            bb = new Bbox(); // Initialize before CalcBB()
             p[0] = new Point(t.p[0]);
             p[1] = new Point(t.p[1]);
             p[2] = new Point(t.p[2]);
@@ -39,6 +43,8 @@ namespace Ocl
         // Create a triangle with the vertices p1, p2, and p3
         public Triangle(Point p1, Point p2, Point p3)
         {
+            n = new Point(); // Initialize before CalcNormal()
+            bb = new Bbox(); // Initialize before CalcBB()
             p[0] = p1;
             p[1] = p2;
             p[2] = p3;
@@ -52,8 +58,8 @@ namespace Ocl
         /// </summary>
         public bool ZSliceVerts(out Point p1, out Point p2, double zcut)
         {
-            p1 = null;
-            p2 = null;
+            p1 = new Point(); // Initialize with default Point instead of null
+            p2 = new Point(); // Initialize with default Point instead of null
 
             if (zcut <= this.bb.MinPt.z || zcut >= this.bb.MaxPt.z)
                 return false; // no zslice

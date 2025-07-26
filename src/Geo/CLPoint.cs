@@ -184,7 +184,7 @@ namespace Ocl
         /// <summary>
         /// String repr
         /// </summary>
-        public string Str()
+        public new string Str()
         {
             return this.ToString();
         }
